@@ -15,3 +15,12 @@ class TodoListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         #serializer holds a django model
         serializer.save(user=self.request.user) 
+
+class TodoRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TodoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # user can only update, delete own posts
+        return Todo.objects.filter(user=user)
